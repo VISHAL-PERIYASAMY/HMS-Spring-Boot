@@ -1,0 +1,86 @@
+plugins {
+	id 'org.springframework.boot' version '2.2.3.BUILD-SNAPSHOT'
+	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+	id 'java'
+	id 'war'
+	id 'checkstyle'
+}
+
+group = 'HospitalManagement'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
+}
+configurations {
+    all {
+          exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+      }
+}
+
+
+ext {
+    checkstyleVersion = '8.11'
+}
+checkstyle {
+    sourceSets = []
+    toolVersion = checkstyleVersion
+    config = rootProject.resources.text.fromFile('etc/checkstyle/rules.xml')
+}
+task checkstyle {
+    dependsOn 'checkstyleMain'
+    dependsOn 'checkstyleTest'
+    tasks.findByName('checkstyleTest').mustRunAfter 'checkstyleMain'
+}
+
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.1'
+	runtimeOnly 'mysql:mysql-connector-java'
+	
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+	
+	// Jackson Databind
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9.1'
+
+    // JAXB
+    compile group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.2.8-b01'
+   
+    
+
+    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
+    implementation 'com.google.guava:guava:27.0.1-jre'
+
+    //JDBC Connection jar for mysql
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.16'
+
+    // Use TestNG test framework
+    testCompile group: 'org.testng', name: 'testng', version: '7.0.0'
+    //OpenCsv For Process CSV Files
+    compile group: 'com.opencsv', name: 'opencsv', version: '4.0'
+    // https://mvnrepository.com/artifact/javax.servlet/jstl
+    compile group: 'javax.servlet', name: 'jstl', version: '1.2'
+    
+
+// Logger
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.1'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.1'
+   
+   
+   compile 'org.springframework.boot:spring-boot-starter-log4j2'
+	
+	
+	
+}
+
+test {
+	useJUnitPlatform()
+}
