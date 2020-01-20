@@ -2,6 +2,8 @@ package global.coda.hospitalmanagement.controller;
 
 import java.util.List;
 
+import javax.websocket.server.PathParam;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,6 @@ import global.coda.hospitalmanagement.exception.BusinessException;
 import global.coda.hospitalmanagement.exception.SystemException;
 import global.coda.hospitalmanagement.model.CustomResponseBody;
 import global.coda.hospitalmanagement.model.Doctor;
-import global.coda.hospitalmanagement.model.DoctorPatientMapping;
 
 /**
  *
@@ -44,7 +45,7 @@ public class DoctorController {
 	 *
 	 * @return the custom response body
 	 * @throws BusinessException the business exception
-	 * @throws SystemException the system exception
+	 * @throws SystemException   the system exception
 	 */
 	@GetMapping("/read")
 	public CustomResponseBody<List<Doctor>> readAllDoctor() throws BusinessException, SystemException {
@@ -81,7 +82,7 @@ public class DoctorController {
 	 * @param doctor the doctor
 	 * @return the custom response body
 	 * @throws BusinessException the business exception
-	 * @throws SystemException the system exception
+	 * @throws SystemException   the system exception
 	 */
 	@DeleteMapping("/delete")
 	public CustomResponseBody<String> deletePatient(@RequestBody Doctor doctor)
@@ -101,7 +102,7 @@ public class DoctorController {
 	 * @param doctor the doctor
 	 * @return the custom response body
 	 * @throws BusinessException the business exception
-	 * @throws SystemException the system exception
+	 * @throws SystemException   the system exception
 	 */
 	@PutMapping("/update")
 	public CustomResponseBody<String> updateDoctor(@RequestBody Doctor doctor)
@@ -121,7 +122,7 @@ public class DoctorController {
 	 * @param doctor the doctor
 	 * @return the custom response body
 	 * @throws BusinessException the business exception
-	 * @throws SystemException the system exception
+	 * @throws SystemException   the system exception
 	 */
 	@PostMapping("/create")
 	public CustomResponseBody<Doctor> createDoctor(@RequestBody Doctor doctor)
@@ -141,34 +142,23 @@ public class DoctorController {
 	 * @param id the id
 	 * @return the custom response body
 	 * @throws BusinessException the business exception
-	 * @throws SystemException the system exception
+	 * @throws SystemException   the system exception
 	 */
-	@GetMapping("/{param}/patient")
-	public CustomResponseBody<DoctorPatientMapping> readRecordById(@PathVariable("param") int id)
+	@GetMapping("getpatient")
+	public CustomResponseBody<List<Doctor>> readRecordById(@PathParam("id") Integer id)
 			throws BusinessException, SystemException {
 		logger.entry(id);
-		CustomResponseBody<DoctorPatientMapping> response = new CustomResponseBody<DoctorPatientMapping>();
+		if(id==null)
+		{
+			id=0;
+		}
+		CustomResponseBody<List<Doctor>> response = new CustomResponseBody<List<Doctor>>();
 		response.setStatus(HttpStatusConstant.OK);
 		response.setMessage(doctorOperationDelegate.readRecordById(id));
 		logger.traceExit(response);
 		return response;
 	}
 
-	/**
-	 * Read all record.
-	 *
-	 * @return the custom response body
-	 * @throws BusinessException the business exception
-	 * @throws SystemException the system exception
-	 */
-	@GetMapping("/getallpatients")
-	public CustomResponseBody<List<DoctorPatientMapping>> readAllRecord() throws BusinessException, SystemException {
-		logger.traceEntry();
-		CustomResponseBody<List<DoctorPatientMapping>> response = new CustomResponseBody<List<DoctorPatientMapping>>();
-		response.setStatus(HttpStatusConstant.OK);
-		response.setMessage(doctorOperationDelegate.readAllRecord());
-		logger.traceExit(response);
-		return response;
-	}
+
 
 }

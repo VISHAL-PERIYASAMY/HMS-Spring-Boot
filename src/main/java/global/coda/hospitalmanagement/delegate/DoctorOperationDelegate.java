@@ -1,9 +1,6 @@
 package global.coda.hospitalmanagement.delegate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,9 +18,6 @@ import global.coda.hospitalmanagement.exception.UserNameAlreadyExistException;
 import global.coda.hospitalmanagement.mapper.DoctorMapper;
 import global.coda.hospitalmanagement.mapper.UserMapper;
 import global.coda.hospitalmanagement.model.Doctor;
-import global.coda.hospitalmanagement.model.DoctorPatientMapping;
-import global.coda.hospitalmanagement.model.PatientRecordDetails;
-import global.coda.hospitalmanagement.model.RecordData;
 
 /**
  *
@@ -189,76 +183,16 @@ public class DoctorOperationDelegate {
 	 * @throws BusinessException the business exception
 	 * @throws SystemException   the system exception
 	 */
-	public DoctorPatientMapping readRecordById(int id) throws BusinessException, SystemException {
+	public List<Doctor> readRecordById(int id) throws BusinessException, SystemException {
 		logger.entry(id);
 		try {
-			DoctorPatientMapping doctorPatientMapping = new DoctorPatientMapping();
-			List<RecordData> recordData = doctorMapper.readRecordById(id);
-			List<PatientRecordDetails> patientList = new ArrayList<PatientRecordDetails>();
-			String doctorName = null;
-			for (RecordData record : recordData) {
-				doctorName = record.getDoctorName();
-				PatientRecordDetails recordDetails = new PatientRecordDetails();
-				recordDetails.setPatientName(record.getPatientName());
-				recordDetails.setDisease(record.getDisease());
-				patientList.add(recordDetails);
-			}
-			doctorPatientMapping.setDoctorName(doctorName);
-			doctorPatientMapping.setListOfPatients(patientList);
-			if (doctorName == null) {
+			List<Doctor> doctor = doctorMapper.readRecordById(id);
+			if (doctor == null) {
 				throw new RecordNotFoundException(HttpStatusConstant.BAD_REQUEST + ApplicationConstant.SPACE
 						+ ApplicationConstant.RECORD_NOT_FOUND);
 			}
-			logger.traceExit(doctorPatientMapping);
-			return doctorPatientMapping;
-
-		} catch (RecordNotFoundException error) {
-			throw new BusinessException(error.getMessage());
-		} catch (Exception error) {
-			throw new SystemException(error.getMessage());
-		}
-	}
-
-	/**
-	 * Read all record.
-	 *
-	 * @return the list
-	 * @throws BusinessException the business exception
-	 * @throws SystemException   the system exception
-	 */
-	public List<DoctorPatientMapping> readAllRecord() throws BusinessException, SystemException {
-		logger.traceEntry();
-		try {
-			List<RecordData> recordData = doctorMapper.readAllRecord();
-			Map<String, List<PatientRecordDetails>> recordMap = new HashMap<String, List<PatientRecordDetails>>();
-			for (RecordData record : recordData) {
-				PatientRecordDetails recordDetails = new PatientRecordDetails();
-				recordDetails.setPatientName(record.getPatientName());
-				recordDetails.setDisease(record.getDisease());
-				String doctorName = record.getDoctorName();
-				if (recordMap.containsKey(doctorName)) {
-					List<PatientRecordDetails> listOfPatient = recordMap.get(doctorName);
-					listOfPatient.add(recordDetails);
-					recordMap.put(doctorName, listOfPatient);
-				} else {
-					List<PatientRecordDetails> listOfPatient = new ArrayList<PatientRecordDetails>();
-					listOfPatient.add(recordDetails);
-					recordMap.put(doctorName, listOfPatient);
-				}
-			}
-			List<DoctorPatientMapping> listDoctorPatientMapping = new ArrayList<DoctorPatientMapping>();
-			for (String key : recordMap.keySet()) {
-				DoctorPatientMapping doctorPatientMapping = new DoctorPatientMapping();
-				doctorPatientMapping.setDoctorName(key);
-				doctorPatientMapping.setListOfPatients(recordMap.get(key));
-				listDoctorPatientMapping.add(doctorPatientMapping);
-			}
-			if (listDoctorPatientMapping.size() == NumericConstants.ZERO) {
-				throw new RecordNotFoundException(HttpStatusConstant.BAD_REQUEST + ApplicationConstant.SPACE
-						+ ApplicationConstant.RECORD_NOT_FOUND);
-			}
-			logger.traceExit(listDoctorPatientMapping);
-			return listDoctorPatientMapping;
+			logger.traceExit(doctor);
+			return doctor;
 		} catch (RecordNotFoundException error) {
 			throw new BusinessException(error.getMessage());
 		} catch (Exception error) {

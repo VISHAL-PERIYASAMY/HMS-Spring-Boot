@@ -18,10 +18,10 @@ public final class DoctorSqlQueryConstant {
 	public static final String DOCTOR_SELECT_ALL = "select * from hms.t_user_details as user LEFT JOIN hms.t_doctor as doctor ON user.pk_user_id ="
 			+ " doctor.fk_user_id where user.is_active = 1 and user.fk_role_id = 3";
 
-	public static final String DOCTOR_SELECT_BY_ID = "select * from hms.t_user_details "
+	public static final String DOCTOR_SELECT_BY_ID = "<script> select * from hms.t_user_details "
 			+ "as user LEFT JOIN hms.t_doctor as doctor "
 			+ "ON user.pk_user_id = doctor.fk_user_id where user.is_active = 1 "
-			+ "and user.fk_role_id = 3 and user.pk_user_id=#{id}";
+			+ "and user.fk_role_id = 3  <if test = 'pk_user_id!=0'>  and user.pk_user_id=#{id} </if> </script>";
 
 	public static final String DOCTOR_DELETE_BY_ID = "update t_doctor set is_active = 0 where fk_user_id = #{id} and is_active = 1";
 

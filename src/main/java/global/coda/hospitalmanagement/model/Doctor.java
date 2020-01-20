@@ -1,6 +1,7 @@
 package global.coda.hospitalmanagement.model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -26,6 +27,17 @@ public class Doctor extends UserDetails {
 
 	/** The updated time. */
 	private Date updatedTime;
+
+	private List<Patient> listOfPatient;
+
+
+	public List<Patient> getListOfPatient() {
+		return listOfPatient;
+	}
+
+	public void setListOfPatient(List<Patient> listOfPatient) {
+		this.listOfPatient = listOfPatient;
+	}
 
 	/**
 	 * Gets the doctor id.
