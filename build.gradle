@@ -5,6 +5,7 @@ plugins {
 	id 'war'
 	id 'maven'
 	id 'checkstyle'
+	id 'com.google.cloud.tools.appengine'
 }
 
 group = 'HospitalManagement'
@@ -36,6 +37,16 @@ task checkstyle {
     dependsOn 'checkstyleTest'
     tasks.findByName('checkstyleTest').mustRunAfter 'checkstyleMain'
 }
+appengine {
+
+  deploy {   // deploy configuration
+    stopPreviousVersion = true  // default - stop the current version
+    promote = true              // default - & make this the current version
+    projectId = 'GCLOUD_CONFIG' // delegate to project in gcloud config
+    version = 'GCLOUD_CONFIG'   // delegate to gcloud to generate a version
+  }
+
+}
 
 
 dependencies {
@@ -55,6 +66,7 @@ dependencies {
     // JAXB
     compile group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.2.8-b01'
    
+   providedCompile 'com.google.appengine:appengine:+'
     
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
